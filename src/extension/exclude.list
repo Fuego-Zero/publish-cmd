@@ -1,0 +1,6 @@
+/*.bat
+/.svn
+/.git
+/.idea
+/node_modules
+/src/bootstrap-3.3.7/node_modules
