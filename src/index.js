@@ -25,7 +25,7 @@ inquirer.prompt([{
         case '商城小程序PC后台':
             gulp.publish(config.shopXCX);
             break;
-        case '极捷号2.0 PC后台':
+        case '极捷号PC后台':
             gulp.publish(config.JJH_PC);
             break;
         case '外送版小程序':
