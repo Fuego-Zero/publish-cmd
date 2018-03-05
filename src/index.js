@@ -20,7 +20,7 @@ inquirer.prompt([{
             wechatApplet.publish(config.BJ_dining_xcx);
             break;
         case '商城小程序第22迭代':
-            wechatApplet.publish(config.shopWeChatApplet_period_20);
+            wechatApplet.publish(config.shopWeChatApplet_period_22);
             break;
         case '商城小程序PC后台':
             gulp.publish(config.shopXCX);
