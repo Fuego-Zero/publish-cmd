@@ -48,6 +48,6 @@ module.exports = {
         someOtherFile: [path.join(projectPath, src, 'config.js'), path.join(projectPath, src, 'init.js')]
     },
     packages : {
-        wxConcatJson: 'http://package.jjiehao.com/wx.concat.json'
+        wxConcatJson: 'http://package.jjiehao.com/shop_xcx.json'
     }
 };
