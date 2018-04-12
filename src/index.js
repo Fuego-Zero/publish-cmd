@@ -3,7 +3,7 @@ const gulp         = require('./task/gulp');
 const wechatApplet = require('./task/wechat-applet');
 const config       = require('./project-config/config');
 
-const project = ['百捷食堂PC后台', '商城小程序PC后台', '门店小程序PC后台', '极捷号PC后台', '百捷食堂小程序', '商城小程序第23迭代', '外送版小程序', '门店版小程序'];
+const project = ['百捷食堂PC后台', '商城小程序PC后台', '门店小程序PC后台', '极捷号PC后台', '百捷食堂小程序', '商城小程序第24迭代', '外送版小程序', '门店版小程序'];
 
 inquirer.prompt([{
     type   : 'list',
@@ -19,8 +19,8 @@ inquirer.prompt([{
         case '百捷食堂小程序':
             wechatApplet.publish(config.BJ_dining_xcx);
             break;
-        case '商城小程序第23迭代':
-            wechatApplet.publish(config.shopWeChatApplet_period_23);
+        case '商城小程序第24迭代':
+            wechatApplet.publish(config.shopWeChatApplet_period_24);
             break;
         case '商城小程序PC后台':
             gulp.publish(config.shopXCX);
