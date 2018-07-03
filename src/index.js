@@ -16,7 +16,7 @@ const companyProject = {
     '门店小程序PC后台',
     '极捷号PC后台',
     '百捷食堂小程序',
-    '商城小程序第24迭代',
+    '商城小程序',
     '外送版小程序',
     '门店版小程序'],
   handle : {
@@ -26,8 +26,8 @@ const companyProject = {
     '百捷食堂小程序' () {
       wechatApplet.publish(config.BJ_dining_xcx)
     },
-    '商城小程序第24迭代' () {
-      wechatApplet.publish(config.shopWeChatApplet_period_24)
+    '商城小程序' () {
+      wechatApplet.publish(config.shopWeChatApplet_dev)
     },
     '商城小程序PC后台' () {
       gulp.publish(config.shopXCX)
@@ -51,6 +51,7 @@ const cusotmProject = {
   choices: [
     '喜之丰小程序',
     '喜之丰PC后台',
+    '秋知丰PC后台',
   ],
   handle : {
     '喜之丰小程序' () {
@@ -58,6 +59,9 @@ const cusotmProject = {
     },
     '喜之丰PC后台' () {
       vue.publish(config.hnqzf_vue)
+    },
+    '秋知丰PC后台' () {
+      vue.publish(config.whqzf_vue)
     },
   },
 }

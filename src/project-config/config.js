@@ -5,6 +5,7 @@ module.exports = {
   shopWeChatApplet_period_22: require('./ShopWeChatApplet-period-22-config'),
   shopWeChatApplet_period_23: require('./ShopWeChatApplet-period-23-config'),
   shopWeChatApplet_period_24: require('./ShopWeChatApplet-period-24-config'),
+  shopWeChatApplet_dev      : require('./ShopWeChatApplet-dev-config'),
   shopXCX                   : require('./shopXCX-config'),
   JJH_PC                    : require('./JJH-PC-config'),
   shopStore_xcx             : require('./ShopStore-WeChatApplet'),
@@ -12,4 +13,5 @@ module.exports = {
   shopStore_takeout_xcx     : require('./ShopStore-takeout-WeChatApplet'),
   hnqzf_WeChatApplet        : require('./hnqzf-WeChatApplet'),
   hnqzf_vue                 : require('./hnqzf-vue'),
+  whqzf_vue                 : require('./whqzf-vue'),
 }
