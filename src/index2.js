@@ -1,5 +1,4 @@
-const ora          = require('ora');
-const wechatApplet = require('./task/wechat-applet');
-const config       = require('./project-config/config');
+const wechatApplet2 = require('./task/wechat-applet2')
+const config = require('./project-config/config')
 
-wechatApplet.publish(config.BJ_dining_xcx);
+wechatApplet2.publish(config.shopWeChatApplet_dev)

@@ -1,8 +1,9 @@
-const inquirer     = require('inquirer')
-const gulp         = require('./task/gulp')
+const inquirer = require('inquirer')
+const gulp = require('./task/gulp')
 const wechatApplet = require('./task/wechat-applet')
-const vue          = require('./task/vue')
-const config       = require('./project-config/config')
+const wechatApplet2 = require('./task/wechat-applet2')
+const vue = require('./task/vue')
+const config = require('./project-config/config')
 
 const type = [
   '定制项目',
@@ -19,7 +20,7 @@ const companyProject = {
     '商城小程序',
     '外送版小程序',
     '门店版小程序'],
-  handle : {
+  handle: {
     '百捷食堂PC后台' () {
       gulp.publish(config.BJ_dining_pc)
     },
@@ -27,7 +28,7 @@ const companyProject = {
       wechatApplet.publish(config.BJ_dining_xcx)
     },
     '商城小程序' () {
-      wechatApplet.publish(config.shopWeChatApplet_dev)
+      wechatApplet2.publish(config.shopWeChatApplet_dev)
     },
     '商城小程序PC后台' () {
       gulp.publish(config.shopXCX)
@@ -53,7 +54,7 @@ const cusotmProject = {
     '喜之丰PC后台',
     '秋知丰PC后台',
   ],
-  handle : {
+  handle: {
     '喜之丰小程序' () {
       wechatApplet.publish(config.hnqzf_WeChatApplet)
     },
@@ -68,9 +69,9 @@ const cusotmProject = {
 
 inquirer.prompt([
   {
-    type   : 'list',
+    type: 'list',
     message: '请选择项目类型:',
-    name   : 'name',
+    name: 'name',
     choices: type,
   }]).then((answers) => {
 
@@ -91,9 +92,9 @@ function handle (config) {
 
   inquirer.prompt([
     {
-      type   : 'list',
+      type: 'list',
       message: '请选择要发布的版本:',
-      name   : 'name',
+      name: 'name',
       choices: choices,
     }]).then((answers) => {
     handle[answers.name]()

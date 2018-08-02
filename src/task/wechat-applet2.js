@@ -148,7 +148,7 @@ function packaging (dst) {
  * @param config {object} 配置文件对象
  */
 function publish (config) {
-
+  let spinner
   moment.locale('zh-cn')
 
   let time = moment().format('LLL'),
@@ -157,7 +157,7 @@ function publish (config) {
     dst = path.join(config.path.dst, `${time} ${name} 送审`)
   mainConfig = config
 
-  let spinner = ora('开始svn更新项目').start()
+  spinner = ora('开始svn更新项目').start()
 
   let res = execSync('svn update', {
     cwd: mainConfig.path.src,
@@ -170,7 +170,21 @@ function publish (config) {
     return
   }
 
-  exists(src, dst, copy)
+  spinner = ora('开始编译项目').start()
+
+  let buildRes = execSync('gulp build', {
+    cwd: mainConfig.path.src,
+  }).toString()
+
+  if (buildRes.includes('项目初始化完成。')) {
+    spinner.succeed('项目编译完成!')
+  } else {
+    spinner.fail('项目编译出错，请解决后再发布!')
+    console.error(buildRes)
+    return
+  }
+
+  exists(path.join(src, 'dist'), dst, copy)
 
   packaging(dst).then(() => {
     remove(dst)
