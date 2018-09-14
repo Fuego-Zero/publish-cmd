@@ -13,39 +13,69 @@ const type = [
 const companyProject = {
   message: '请选择要发布的项目:',
   choices: [
-    '百捷食堂PC后台',
-    '商城小程序PC后台',
-    '门店小程序PC后台',
-    '极捷号PC后台',
-    '百捷食堂小程序',
+    '百捷食堂',
     '商城小程序',
-    '外送版小程序',
-    '门店版小程序'
+    '门店小程序',
+    '极捷号PC后台',
+    '外送版小程序'
   ],
   handle: {
-    '百捷食堂PC后台' () {
-      gulp.publish(config.BJ_dining_pc)
-    },
-    '百捷食堂小程序' () {
-      wechatApplet.publish(config.BJ_dining_xcx)
+    '百捷食堂' () {
+      handle({
+        message: '请选择要发布的版本:',
+        choices: [
+          'PC端',
+          '小程序'
+        ],
+        handle: {
+          'PC后台' () {
+            gulp.publish(config.BJ_dining_pc)
+          },
+          '小程序' () {
+            wechatApplet.publish(config.BJ_dining_xcx)
+          }
+        }
+      })
     },
     '商城小程序' () {
-      wechatApplet2.publish(config.shopWeChatApplet_dev)
+      handle({
+        message: '请选择要发布的版本:',
+        choices: [
+          'PC端',
+          '小程序'
+        ],
+        handle: {
+          'PC后台' () {
+            gulp.publish(config.shopXCX)
+          },
+          '小程序' () {
+            wechatApplet2.publish(config.shopWeChatApplet_dev)
+          }
+        }
+      })
     },
-    '商城小程序PC后台' () {
-      gulp.publish(config.shopXCX)
+    '门店小程序' () {
+      handle({
+        message: '请选择要发布的版本:',
+        choices: [
+          'PC端',
+          '小程序'
+        ],
+        handle: {
+          'PC后台' () {
+            gulp.publish(config.shopStore_pc)
+          },
+          '小程序' () {
+            wechatApplet.publish(config.shopStore_xcx)
+          }
+        }
+      })
     },
     '极捷号PC后台' () {
       gulp.publish(config.JJH_PC)
     },
     '外送版小程序' () {
       wechatApplet.publish(config.shopStore_takeout_xcx)
-    },
-    '门店版小程序' () {
-      wechatApplet.publish(config.shopStore_xcx)
-    },
-    '门店小程序PC后台' () {
-      gulp.publish(config.shopStore_pc)
     }
   }
 }
@@ -72,7 +102,7 @@ const cusotmProject = {
       handle({
         message: '请选择要发布的版本:',
         choices: [
-          'PC后台',
+          'PC端',
           '小程序'
         ],
         handle: {
