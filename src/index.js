@@ -28,7 +28,7 @@ const companyProject = {
           '小程序'
         ],
         handle: {
-          'PC后台' () {
+          'PC端' () {
             gulp.publish(config.BJ_dining_pc)
           },
           '小程序' () {
@@ -45,7 +45,7 @@ const companyProject = {
           '小程序'
         ],
         handle: {
-          'PC后台' () {
+          'PC端' () {
             gulp.publish(config.shopXCX)
           },
           '小程序' () {
@@ -62,7 +62,7 @@ const companyProject = {
           '小程序'
         ],
         handle: {
-          'PC后台' () {
+          'PC端' () {
             gulp.publish(config.shopStore_pc)
           },
           '小程序' () {
@@ -106,7 +106,7 @@ const cusotmProject = {
           '小程序'
         ],
         handle: {
-          'PC后台' () {
+          'PC端' () {
             vue.publish(config.awildboyPC)
           },
           '小程序' () {
