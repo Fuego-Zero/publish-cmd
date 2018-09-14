@@ -7,10 +7,11 @@ const config = require('./project-config/config')
 
 const type = [
   '定制项目',
-  '公司项目',
+  '公司项目'
 ]
 
 const companyProject = {
+  message: '请选择要发布的项目:',
   choices: [
     '百捷食堂PC后台',
     '商城小程序PC后台',
@@ -19,7 +20,8 @@ const companyProject = {
     '百捷食堂小程序',
     '商城小程序',
     '外送版小程序',
-    '门店版小程序'],
+    '门店版小程序'
+  ],
   handle: {
     '百捷食堂PC后台' () {
       gulp.publish(config.BJ_dining_pc)
@@ -44,15 +46,17 @@ const companyProject = {
     },
     '门店小程序PC后台' () {
       gulp.publish(config.shopStore_pc)
-    },
-  },
+    }
+  }
 }
 
 const cusotmProject = {
+  message: '请选择要发布的项目:',
   choices: [
     '喜之丰小程序',
     '喜之丰PC后台',
     '秋知丰PC后台',
+    '野孩子'
   ],
   handle: {
     '喜之丰小程序' () {
@@ -64,7 +68,24 @@ const cusotmProject = {
     '秋知丰PC后台' () {
       vue.publish(config.whqzf_vue)
     },
-  },
+    '野孩子' () {
+      handle({
+        message: '请选择要发布的版本:',
+        choices: [
+          'PC后台',
+          '小程序'
+        ],
+        handle: {
+          'PC后台' () {
+            vue.publish(config.awildboyPC)
+          },
+          '小程序' () {
+            wechatApplet.publish(config.awildboyXCX)
+          }
+        }
+      })
+    }
+  }
 }
 
 inquirer.prompt([
@@ -72,9 +93,8 @@ inquirer.prompt([
     type: 'list',
     message: '请选择项目类型:',
     name: 'name',
-    choices: type,
+    choices: type
   }]).then((answers) => {
-
   switch (answers.name) {
     case '定制项目':
       handle(cusotmProject)
@@ -83,22 +103,16 @@ inquirer.prompt([
       handle(companyProject)
       break
   }
-
 })
 
-function handle (config) {
-
-  let {choices, handle} = config
-
+function handle ({choices, handle, message}) {
   inquirer.prompt([
     {
       type: 'list',
-      message: '请选择要发布的版本:',
+      message,
       name: 'name',
-      choices: choices,
+      choices
     }]).then((answers) => {
     handle[answers.name]()
   })
-
 }
-
