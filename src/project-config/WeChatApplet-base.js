@@ -2,12 +2,16 @@ module.exports = {
   exclude: {
     file: [
       'jsconfig.json',
-      'project.config.json',
+      '.babelrc',
+      'build.bat',
+      'gulpfile.js',
+      'gulpfile-bak.js',
       'package.json',
       'package-lock.json',
-      'gulpfile.js',
+      'project.config.json',
+      'yarn.lock'
     ],
     extname: ['.less'],
-    directory: ['.svn', '.vscode', 'typings', 'node_modules'],
-  },
+    directory: ['.svn', '.vscode', 'typings', 'node_modules']
+  }
 }
