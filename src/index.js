@@ -110,7 +110,7 @@ const cusotmProject = {
             vue.publish(config.awildboyPC)
           },
           '小程序' () {
-            wechatApplet.publish(config.awildboyXCX)
+            wechatApplet2.publish(config.awildboyXCX)
           }
         }
       })

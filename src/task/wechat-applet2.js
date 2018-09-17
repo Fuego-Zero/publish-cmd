@@ -160,7 +160,7 @@ function publish (config) {
   spinner = ora('开始svn更新项目').start()
 
   let res = execSync('svn update', {
-    cwd: mainConfig.path.src,
+    cwd: mainConfig.path.src
   }).toString()
 
   if (res.indexOf('Summary of conflicts') === -1) {
@@ -173,7 +173,7 @@ function publish (config) {
   spinner = ora('开始编译项目').start()
 
   let buildRes = execSync('gulp build', {
-    cwd: mainConfig.path.src,
+    cwd: mainConfig.path.src
   }).toString()
 
   if (buildRes.includes('项目初始化完成。')) {
@@ -193,5 +193,5 @@ function publish (config) {
 }
 
 module.exports = {
-  publish,
+  publish
 }
