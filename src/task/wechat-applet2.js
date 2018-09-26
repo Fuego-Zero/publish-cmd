@@ -172,7 +172,7 @@ function publish (config) {
 
   spinner = ora('开始编译项目').start()
 
-  let buildRes = execSync('gulp build', {
+  let buildRes = execSync('npm run build', {
     cwd: mainConfig.path.src
   }).toString()
 
