@@ -1,102 +1,95 @@
-let mainConfig     = null
-const chalk        = require('chalk')
-const gulp         = require('gulp')
-const path         = require('path')
-const less         = require('gulp-less')
-const minifycss    = require('gulp-minify-css')
-const rename       = require('gulp-rename')
+let mainConfig = null
+const chalk = require('chalk')
+const gulp = require('gulp')
+const path = require('path')
+const less = require('gulp-less')
+const gulpMinifyCss = require('gulp-minify-css')
+const rename = require('gulp-rename')
 const autoprefixer = require('gulp-autoprefixer')
 
 function minifyCss (config) {
   return new Promise((resolve, reject) => {
-
     let styleArr = [
       path.join(config.projectPath, config.tpls, 'style.less'),
       path.join(config.projectPath, config.tpls, 'add-common.less'),
-      path.join(config.projectPath, config.tpls, 'common.less'),
+      path.join(config.projectPath, config.tpls, 'common.less')
     ]
 
-    gulp.src(styleArr).
-      pipe(less()).
-      pipe(autoprefixer({
+    gulp.src(styleArr)
+      .pipe(less())
+      .pipe(autoprefixer({
         browsers: ['last 2 versions', 'iOS >= 7', 'Firefox >= 20'],
-        cascade : false,
-      })).
-      pipe(minifycss()).
-      pipe(rename(function (path) {
+        cascade: false
+      }))
+      .pipe(gulpMinifyCss())
+      .pipe(rename(function (path) {
         path.extname = path.extname.replace('.css', '.min.css')
-      })).
-      pipe(gulp.dest(path.join(config.projectPath, config.tpls))).
-      on('end', () => {
+      }))
+      .pipe(gulp.dest(path.join(config.projectPath, config.tpls)))
+      .on('end', () => {
         resolve()
-      }).
-      on('error', (err) => {
+      })
+      .on('error', (err) => {
         console.error(err)
         reject(err)
       })
-
   })
 }
 
-const uglify     = require('gulp-uglify')
+const uglify = require('gulp-uglify')
 const ngAnnotate = require('gulp-ng-annotate')
 
 function uglifyConfig (config) {
   return new Promise((resolve, reject) => {
-
     gulp.src([
-        path.join(config.projectPath, config.src, 'config.js'),
-        path.join(config.projectPath, config.src, 'init.js')]).
-      pipe(ngAnnotate()).
-      pipe(uglify()).
-      pipe(rename(function (path) {
+      path.join(config.projectPath, config.src, 'config.js'),
+      path.join(config.projectPath, config.src, 'init.js')])
+      .pipe(ngAnnotate())
+      .pipe(uglify())
+      .pipe(rename(function (path) {
         path.extname = path.extname.replace('.js', '.min.js')
-      })).
-      pipe(gulp.dest(path.join(config.projectPath, config.src))).
-      on('end', () => {
+      }))
+      .pipe(gulp.dest(path.join(config.projectPath, config.src)))
+      .on('end', () => {
         resolve()
-      }).
-      on('error', (err) => {
+      })
+      .on('error', (err) => {
         console.error(err)
         reject(err)
       })
-
   })
 }
 
 const concat = require('gulp-concat')
-const babel  = require('gulp-babel')
+const babel = require('gulp-babel')
 
 function concatAllJs (config) {
   return new Promise((resolve, reject) => {
-
-    gulp.src(path.join(config.projectPath, config.tpls, '**/*.js')).
-      pipe(concat('app.js')).
-      pipe(babel()).
-      pipe(ngAnnotate()).
-      pipe(uglify()).
-      pipe(gulp.dest(path.join(config.projectPath, config.src))).
-      on('end', () => {
+    gulp.src(path.join(config.projectPath, config.tpls, '**/*.js'))
+      .pipe(concat('app.js'))
+      .pipe(babel({ compact: false }))
+      .pipe(ngAnnotate())
+      .pipe(uglify())
+      .pipe(gulp.dest(path.join(config.projectPath, config.src)))
+      .on('end', () => {
         resolve()
-      }).
-      on('error', (err) => {
+      })
+      .on('error', (err) => {
         console.error(err)
         reject(err)
       })
-
   })
 }
 
 function copyFile (config) {
   return new Promise((resolve, reject) => {
+    let destPath = config.publish.destPath
 
-    let destPath = config.publish.destPath,
-        copy     = config.publish.copy
+    let copy = config.publish.copy
 
     Promise.all(copy.map(function (item) {
       return new Promise((resolve, reject) => {
-
-        let dest, temp = item.match(/.\\src\\([\w\.-]+)/)[1]
+        let dest; let temp = item.match(/.\\src\\([\w\.-]+)/)[1]
 
         if (/\./.test(temp)) {
           dest = destPath
@@ -110,50 +103,47 @@ function copyFile (config) {
           console.error(err)
           reject(err)
         })
-
       })
     })).then(() => {
       resolve()
     }, (err) => {
       console.error(err)
-      reject()
+      reject(new Error())
     })
-
   })
 }
 
-const fs     = require('fs')
-const http   = require('http')
+const fs = require('fs')
+const http = require('http')
 const crypto = require('crypto')
 
-function modifyIndexmodifyIndex (config) {
+function modifyIndex (config) {
   return new Promise((resolve, reject) => {
-
     let indexSrc = config.publish.index
 
-    //获取index页面的内容
+    // 获取index页面的内容
     function getIndexContent () {
       return fs.readFileSync(indexSrc).toString()
     }
 
-    //删除index页面中带有data-temp-file临时文件的引用
-    let removeTempRefer = function () {
-      let con = getIndexContent().
-        replace(/\s*<script.*data-temp-file><\/script>/g, '')
+    // 删除index页面中带有data-temp-file临时文件的引用
+    let removeTempRefer = (function () {
+      let con = getIndexContent()
+        .replace(/\s*<script.*data-temp-file><\/script>/g, '')
       fs.writeFileSync(indexSrc, con)
-    }()
+    }())
 
-    //增加index页面中的 app.js
-    let addAppJs = function () {
-      let con = getIndexContent().
-        replace('</head>', '\t<script src="app.js"></script>\r\n' + '</head>')
+    // 增加index页面中的 app.js
+    let addAppJs = (function () {
+      let con = getIndexContent()
+        .replace('</head>', '\t<script src="app.js"></script>\r\n' + '</head>')
       fs.writeFileSync(indexSrc, con)
-    }()
+    }())
 
-    //获取packages中的JSON
-    let getPackagesWxJson = function () {
+    // 获取packages中的JSON
+    let getPackagesWxJson = (function () {
       http.get(config.packages.wxConcatJson, function (res) {
-        const statusCode  = res.statusCode
+        const statusCode = res.statusCode
         const contentType = res.headers['content-type']
 
         let error
@@ -185,14 +175,13 @@ function modifyIndexmodifyIndex (config) {
       }).on('error', (e) => {
         console.log(`Got error: ${e.message}`)
       })
-    }()
+    }())
 
-    //根据json配置替换 dist 文件夹中index.html页面的引用
+    // 根据json配置替换 dist 文件夹中index.html页面的引用
     function changeIndexRefer (data) {
-
       let i, source, temp
-      let conMin = getIndexContent().
-        replace(/(\.js["']|\.css["'])\s+data-nd-cp/g, '.min$1')
+      let conMin = getIndexContent()
+        .replace(/(\.js["']|\.css["'])\s+data-nd-cp/g, '.min$1')
 
       source = data.js.source
       for (i = 0; i < source.length; i++) {
@@ -234,7 +223,7 @@ function modifyIndexmodifyIndex (config) {
         }
       }
 
-      //引用 package 的文件加hash值
+      // 引用 package 的文件加hash值
       conMin = conMin.replace(
         /src="http:\/\/package.jjiehao.com\/js\/(.*\.min\.js)/g,
         function (val, $1) {
@@ -247,46 +236,42 @@ function modifyIndexmodifyIndex (config) {
           return val + '?v=' + data.md5Css[$1]
         })
 
-      //相对地址 css 的文件加hash值
+      // 相对地址 css 的文件加hash值
       for (let i = 0; i < config.customMd5.css.length; i++) {
         conMin = conMin.replace('href="tpls/' +
           config.customMd5.css[i], 'href="tpls/' + config.customMd5.css[i] +
-          '?v=' + crypto.createHash('md5').
-            update(config.tpls + '/' + config.customMd5.css[i]).
-            digest('hex').
-            slice(0, 10))
+          '?v=' + crypto.createHash('md5')
+          .update(config.tpls + '/' + config.customMd5.css[i])
+          .digest('hex')
+          .slice(0, 10))
       }
 
-      //相对地址 js 的文件加hash值
-      //需要加前缀 不然会与 ueditor.config.min.js 冲突
+      // 相对地址 js 的文件加hash值
+      // 需要加前缀 不然会与 ueditor.config.min.js 冲突
       for (let i = 0; i < config.customMd5.js.length; i++) {
         conMin = conMin.replace('src="' + config.customMd5.js[i], 'src="' +
-          config.customMd5.js[i] + '?v=' + crypto.createHash('md5').
-            update(config.src + '/' + config.customMd5.js[i]).
-            digest('hex').
-            slice(0, 10))
+          config.customMd5.js[i] + '?v=' + crypto.createHash('md5')
+          .update(config.src + '/' + config.customMd5.js[i])
+          .digest('hex')
+          .slice(0, 10))
       }
 
       fs.writeFileSync(indexSrc, conMin)
 
       resolve()
-
     }
-
   })
 }
 
 const inquirer = require('inquirer')
-const ora      = require('ora')
+const ora = require('ora')
 const execSync = require('child_process').execSync
 
 function execPublish (fn, config) {
   return new Promise((resolve) => {
-
     let it = fn(config)
 
     function run (result) {
-
       if (result.done) {
         resolve()
         return result.value
@@ -295,26 +280,22 @@ function execPublish (fn, config) {
       return result.value.then(() => {
         return run(it.next())
       }, (err) => {
-        console.log(chalk.gray.bgRed.bold(`发布流程出现故障！${err ? err : ''}`))
+        console.log(chalk.gray.bgRed.bold(`发布流程出现故障！${err || ''}`))
         return run(it.throw(err))
       })
-
     }
 
     run(it.next())
-
   })
 }
 
 function * pulish () {
-
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始svn更新项目').start()
 
       let res = execSync('svn update', {
-        cwd: mainConfig.projectPath,
+        cwd: mainConfig.projectPath
       }).toString()
 
       if (res.indexOf('Summary of conflicts') === -1) {
@@ -324,13 +305,11 @@ function * pulish () {
         spinner.fail('svn更新遇到冲突，请解决后再发布!')
         reject()
       }
-
     })
-  }()
+  }())
 
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始编译css文件').start()
 
       minifyCss(mainConfig).then(() => {
@@ -340,13 +319,11 @@ function * pulish () {
         console.error(err)
         reject()
       })
-
     })
-  }()
+  }())
 
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始编译配置文件').start()
 
       uglifyConfig(mainConfig).then(() => {
@@ -356,13 +333,11 @@ function * pulish () {
         console.error(err)
         reject()
       })
-
     })
-  }()
+  }())
 
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始编译js文件').start()
 
       concatAllJs(mainConfig).then(() => {
@@ -372,13 +347,11 @@ function * pulish () {
         console.error(err)
         reject()
       })
-
     })
-  }()
+  }())
 
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始复制文件').start()
 
       copyFile(mainConfig).then(() => {
@@ -388,55 +361,45 @@ function * pulish () {
         console.error(err)
         reject()
       })
-
     })
-  }()
+  }())
 
-  yield function () {
+  yield (function () {
     return new Promise((resolve, reject) => {
-
       let spinner = ora('开始处理首页').start()
 
-      modifyIndexmodifyIndex(mainConfig).then(() => {
+      modifyIndex(mainConfig).then(() => {
         spinner.succeed('首页处理完成!')
         resolve()
       }, (err) => {
         spinner.fail(err)
         reject()
       })
-
     })
-  }()
-
+  }())
 }
 
 function publish (config) {
-
   mainConfig = config
 
   execPublish(pulish).then(() => {
-
     inquirer.prompt([
       {
-        type   : 'confirm',
+        type: 'confirm',
         message: '发布编译完成，是否上传？',
-        name   : 'upload',
+        name: 'upload'
       }]).then((answers) => {
-
       if (!answers.upload) return
       execSync(`E:/bin/rsync/rsync -avz --progress --exclude-from="${path.join(
         __dirname, '..', 'extension',
         'exclude.list')}" ./ bjbw@139.129.166.12::${mainConfig.publish.name}`, {
-        cwd     : mainConfig.publish.destPath,//固定目录
-        detached: true,//打开新窗口
+        cwd: mainConfig.publish.destPath, // 固定目录
+        detached: true // 打开新窗口
       })
-
     })
-
   })
-
 }
 
 module.exports = {
-  publish,
+  publish
 }

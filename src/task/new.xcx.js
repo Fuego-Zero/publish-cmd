@@ -1,13 +1,13 @@
 const moment = require('moment')
+moment.locale('zh-cn')
 const fs = require('fs')
 const statSync = fs.statSync
 const path = require('path')
 const archiver = require('archiver')
 const ora = require('ora')
 const execSync = require('child_process').execSync
-const chalk = require('chalk')
 
-let mainConfig = null
+let mainConfig
 
 /**
  * 复制目录中的所有文件包括子目录
@@ -16,23 +16,18 @@ let mainConfig = null
  * @param dst {String} 复制到指定的目录
  */
 function copy (src, dst) {
-
   // 读取目录中的所有文件
   fs.readdirSync(src).forEach((path) => {
-
     let _src = src + '/' + path
     let _dst = dst + '/' + path
 
     let st = statSync(_src)
-    // 判断是否为文件
+    // 判断是否为文件,如果是目录则递归调用自身
     if (st.isFile() && !exclude(0, path)) {
       fs.copyFileSync(_src, _dst)
-    }
-    // 如果是目录则递归调用自身
-    else if (st.isDirectory() && !exclude(1, path)) {
+    } else if (st.isDirectory() && !exclude(1, path)) {
       exists(_src, _dst, copy)
     }
-
   })
 }
 
@@ -41,22 +36,19 @@ function copy (src, dst) {
  * @param dst
  */
 function remove (dst) {
-
   fs.readdirSync(dst).forEach((path) => {
+    let _dst = dst + '/' + path
 
-    let _dst = dst + '/' + path,
-      st = statSync(_dst)
+    let st = statSync(_dst)
 
     if (st.isFile()) {
       fs.unlinkSync(_dst)
     } else if (st.isDirectory()) {
       remove(_dst)
     }
-
   })
 
   fs.rmdirSync(dst)
-
 }
 
 /**
@@ -65,11 +57,9 @@ function remove (dst) {
  * @param name {string}
  */
 function exclude (type, name) {
-
   let temp = false
 
   if (type === 0) {
-
     temp = mainConfig.exclude.file.find((item) => {
       return item === name
     })
@@ -79,7 +69,6 @@ function exclude (type, name) {
         return path.extname(name) === item
       })
     }
-
   } else if (type === 1) {
     temp = mainConfig.exclude.directory.find((item) => {
       return item === name
@@ -87,12 +76,10 @@ function exclude (type, name) {
   }
 
   return temp
-
 }
 
 // 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
 function exists (src, dst, callback) {
-
   if (fs.existsSync(dst)) {
     // 已存在
     callback(src, dst)
@@ -101,7 +88,6 @@ function exists (src, dst, callback) {
     fs.mkdirSync(dst)
     callback(src, dst)
   }
-
 }
 
 /**
@@ -110,7 +96,6 @@ function exists (src, dst, callback) {
  */
 function packaging (dst) {
   return new Promise((resolve, reject) => {
-
     let output = fs.createWriteStream(`${dst}.zip`)
     let archive = archiver('zip')
 
@@ -127,8 +112,7 @@ function packaging (dst) {
     archive.on('warning', function (err) {
       if (err.code === 'ENOENT') {
       } else {
-        throw err
-        reject()
+        reject(new Error(err))
       }
     })
 
@@ -139,7 +123,6 @@ function packaging (dst) {
     archive.pipe(output)
     archive.directory(`${dst}`, false)
     archive.finalize()
-
   })
 }
 
@@ -149,12 +132,11 @@ function packaging (dst) {
  */
 function publish (config) {
   let spinner
-  moment.locale('zh-cn')
+  let time = moment().format('ll HHmmss')
+  let src = config.path.src
+  let name = config.name || path.basename(src)
+  let dst = path.join(config.path.dst, `${time} ${name}-送审`)
 
-  let time = moment().format('LLL'),
-    src = config.path.src,
-    name = config.name || path.basename(src),
-    dst = path.join(config.path.dst, `${time} ${name} 送审`)
   mainConfig = config
 
   spinner = ora('开始svn更新项目').start()
@@ -176,7 +158,7 @@ function publish (config) {
     cwd: mainConfig.path.src
   }).toString()
 
-  if (buildRes.includes('项目初始化完成。')) {
+  if (buildRes.includes('项目文件编译完毕')) {
     spinner.succeed('项目编译完成!')
   } else {
     spinner.fail('项目编译出错，请解决后再发布!')
@@ -189,7 +171,6 @@ function publish (config) {
   packaging(dst).then(() => {
     remove(dst)
   })
-
 }
 
 module.exports = {

@@ -1,9 +1,9 @@
 const inquirer = require('inquirer')
 const gulp = require('./task/gulp')
-const wechatApplet = require('./task/wechat-applet')
-const wechatApplet2 = require('./task/wechat-applet2')
+const weChatApplet = require('./task/weChat-applet')
+const xcx = require('./task/new.xcx')
 const vue = require('./task/vue')
-const config = require('./project-config/config')
+const config = require('./config/config')
 
 const type = [
   '定制项目',
@@ -32,7 +32,7 @@ const companyProject = {
             gulp.publish(config.BJ_dining_pc)
           },
           '小程序' () {
-            wechatApplet.publish(config.BJ_dining_xcx)
+            weChatApplet.publish(config.BJ_dining_xcx)
           }
         }
       })
@@ -42,14 +42,18 @@ const companyProject = {
         message: '请选择要发布的版本:',
         choices: [
           'PC端',
-          '小程序'
+          '微信小程序',
+          '百度小程序'
         ],
         handle: {
           'PC端' () {
             gulp.publish(config.shopXCX)
           },
-          '小程序' () {
-            wechatApplet2.publish(config.shopWeChatApplet_dev)
+          '微信小程序' () {
+            xcx.publish(config.shopWX_xcx)
+          },
+          '百度小程序' () {
+            xcx.publish(config.shopBD_xcx)
           }
         }
       })
@@ -66,7 +70,7 @@ const companyProject = {
             gulp.publish(config.shopStore_pc)
           },
           '小程序' () {
-            wechatApplet.publish(config.shopStore_xcx)
+            weChatApplet.publish(config.shopStore_xcx)
           }
         }
       })
@@ -75,12 +79,12 @@ const companyProject = {
       gulp.publish(config.JJH_PC)
     },
     '外送版小程序' () {
-      wechatApplet.publish(config.shopStore_takeout_xcx)
+      weChatApplet.publish(config.shopStore_takeout_xcx)
     }
   }
 }
 
-const cusotmProject = {
+const customProject = {
   message: '请选择要发布的项目:',
   choices: [
     '喜之丰小程序',
@@ -90,7 +94,7 @@ const cusotmProject = {
   ],
   handle: {
     '喜之丰小程序' () {
-      wechatApplet.publish(config.hnqzf_WeChatApplet)
+      weChatApplet.publish(config.hnqzf_WeChatApplet)
     },
     '喜之丰PC后台' () {
       vue.publish(config.hnqzf_vue)
@@ -110,7 +114,7 @@ const cusotmProject = {
             vue.publish(config.awildboyPC)
           },
           '小程序' () {
-            wechatApplet2.publish(config.awildboyXCX)
+            xcx.publish(config.awildboyXCX)
           }
         }
       })
@@ -127,7 +131,7 @@ inquirer.prompt([
   }]).then((answers) => {
   switch (answers.name) {
     case '定制项目':
-      handle(cusotmProject)
+      handle(customProject)
       break
     case '公司项目':
       handle(companyProject)
@@ -135,7 +139,7 @@ inquirer.prompt([
   }
 })
 
-function handle ({choices, handle, message}) {
+function handle ({ choices, handle, message }) {
   inquirer.prompt([
     {
       type: 'list',
