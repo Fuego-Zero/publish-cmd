@@ -128,8 +128,7 @@ function modifyIndex (config) {
 
     // 删除index页面中带有data-temp-file临时文件的引用
     let removeTempRefer = (function () {
-      let con = getIndexContent()
-        .replace(/\s*<script.*data-temp-file><\/script>/g, '')
+      let con = getIndexContent().replace(/\s*<script.*\s*data-temp-file><\/script>/g, '')
       fs.writeFileSync(indexSrc, con)
     }())
 
