@@ -207,17 +207,18 @@ function modifyIndex (config) {
         if (source[i] == '') {
           continue
         }
-        temp = '<link rel="stylesheet" href="http://package.jjiehao.com' +
-          source[i].replace(/^\./, '') + '">'
+        temp = '<link\\s*rel="stylesheet"\\s*href="http://package.jjiehao.com' + source[i].replace(/^\./, '') + '">'
         if (new RegExp(temp).test(conMin)) {
           if (i === source.length - 1) {
-            conMin = conMin.replace(new RegExp(
-              temp), '<link rel="stylesheet" href="http://package.jjiehao.com' +
+            conMin = conMin.replace(new RegExp(temp),
+              '<link rel="stylesheet" href="http://package.jjiehao.com' +
               data.css.dest.replace(/^\./, '') + '/' + data.css.newName + '">')
           } else {
             conMin = conMin.replace(new RegExp('\\s*' + temp), '')
           }
         } else {
+          console.log(conMin)
+          console.log(temp)
           return reject('css文件引用不对')
         }
       }
