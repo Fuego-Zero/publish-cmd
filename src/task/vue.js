@@ -1,37 +1,32 @@
-const path          = require('path')
-const ora           = require('ora')
-const inquirer      = require('inquirer')
-const child_process = require('child_process')
-const execSync      = child_process.execSync
-const spawn         = child_process.spawn
+const path = require('path')
+const ora = require('ora')
+const inquirer = require('inquirer')
+const childProcess = require('child_process')
+const execSync = childProcess.execSync
+const spawn = childProcess.spawn
 
 function upload (config) {
-
   inquirer.prompt([
     {
-      type   : 'confirm',
+      type: 'confirm',
       message: '发布编译完成，是否上传？',
-      name   : 'upload',
+      name: 'upload'
     }]).then((answers) => {
-
     if (!answers.upload) return
     execSync(`E:/bin/rsync/rsync -avz --progress --exclude-from="${path.join(
       __dirname, '..', 'extension',
       'exclude.list')}" ./ bjbw@139.129.166.12::${config.publish.name}`, {
-      cwd     : path.join(config.path, 'dist'),
-      detached: true,
+      cwd: path.join(config.path, 'dist'),
+      detached: true
     })
-
   })
-
 }
 
 function publish (config) {
-
   let svnSpinner = ora('开始svn更新项目').start()
 
   let res = execSync('svn update', {
-    cwd: config.path,
+    cwd: config.path
   }).toString()
 
   if (res.includes('Summary of conflicts')) {
@@ -43,7 +38,7 @@ function publish (config) {
 
   let node = spawn('node',
     ['build/build.js'], {
-      cwd: config.path,
+      cwd: config.path
     })
 
   let nodeSpinner = ora('开始编译发布版本').start()
@@ -65,9 +60,8 @@ function publish (config) {
     status && nodeSpinner.succeed('编译完成!')
     upload(config)
   })
-
 }
 
 module.exports = {
-  publish,
+  publish
 }
