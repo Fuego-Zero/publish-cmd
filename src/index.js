@@ -44,7 +44,8 @@ const COMPANY_PROJECT = {
           'PC端',
           '微信小程序',
           '微信小程序33迭代',
-          '百度小程序'
+          '百度小程序',
+          '百度小程序33迭代'
         ],
         handle: {
           'PC端' () {
@@ -58,6 +59,9 @@ const COMPANY_PROJECT = {
           },
           '百度小程序' () {
             xcx.publish(config.shopBD_xcx)
+          },
+          '百度小程序33迭代' () {
+            xcx.publish(config.shopBD_xcx_33)
           }
         }
       })

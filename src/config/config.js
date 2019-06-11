@@ -4,6 +4,7 @@ module.exports = {
   shopWX_xcx: require('./shop.wx.xcx.config'),
   shopWX_xcx_33: require('./shop.wx.xcx.config.33'),
   shopBD_xcx: require('./shop.bd.xcx.config'),
+  shopBD_xcx_33: require('./shop.bd.xcx.config.33'),
   shopXCX: require('./shopXCX-config'),
   JJH_PC: require('./JJH-PC-config'),
   shopStore_xcx: require('./ShopStore-WeChatApplet'),

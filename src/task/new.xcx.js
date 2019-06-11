@@ -154,7 +154,7 @@ function publish (config) {
 
   spinner = ora('开始编译项目').start()
 
-  let buildRes = execSync('npm run build', {
+  let buildRes = execSync('yarn build', {
     cwd: mainConfig.path.src
   }).toString()
 

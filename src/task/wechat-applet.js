@@ -16,7 +16,6 @@ let mainConfig = null
  * @param dst {String} 复制到指定的目录
  */
 function copy (src, dst) {
-
   // 读取目录中的所有文件
   fs.readdirSync(src).forEach((path) => {
 
@@ -32,7 +31,6 @@ function copy (src, dst) {
     else if (st.isDirectory() && !exclude(1, path)) {
       exists(_src, _dst, copy)
     }
-
   })
 }
 
@@ -41,22 +39,19 @@ function copy (src, dst) {
  * @param dst
  */
 function remove (dst) {
-
   fs.readdirSync(dst).forEach((path) => {
+    let _dst = dst + '/' + path
 
-    let _dst = dst + '/' + path,
-      st = statSync(_dst)
+    let st = statSync(_dst)
 
     if (st.isFile()) {
       fs.unlinkSync(_dst)
     } else if (st.isDirectory()) {
       remove(_dst)
     }
-
   })
 
   fs.rmdirSync(dst)
-
 }
 
 /**
@@ -65,11 +60,9 @@ function remove (dst) {
  * @param name {string}
  */
 function exclude (type, name) {
-
   let temp = false
 
   if (type === 0) {
-
     temp = mainConfig.exclude.file.find((item) => {
       return item === name
     })
@@ -79,7 +72,6 @@ function exclude (type, name) {
         return path.extname(name) === item
       })
     }
-
   } else if (type === 1) {
     temp = mainConfig.exclude.directory.find((item) => {
       return item === name
@@ -87,12 +79,10 @@ function exclude (type, name) {
   }
 
   return temp
-
 }
 
 // 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
 function exists (src, dst, callback) {
-
   if (fs.existsSync(dst)) {
     // 已存在
     callback(src, dst)
@@ -101,7 +91,6 @@ function exists (src, dst, callback) {
     fs.mkdirSync(dst)
     callback(src, dst)
   }
-
 }
 
 /**
@@ -110,7 +99,6 @@ function exists (src, dst, callback) {
  */
 function packaging (dst) {
   return new Promise((resolve, reject) => {
-
     let output = fs.createWriteStream(`${dst}.zip`)
     let archive = archiver('zip')
 
@@ -139,7 +127,6 @@ function packaging (dst) {
     archive.pipe(output)
     archive.directory(`${dst}`, false)
     archive.finalize()
-
   })
 }
 
@@ -148,19 +135,21 @@ function packaging (dst) {
  * @param config {object} 配置文件对象
  */
 function publish (config) {
-
   moment.locale('zh-cn')
 
-  let time = moment().format('LLL'),
-    src = config.path.src,
-    name = config.name || path.basename(src),
-    dst = path.join(config.path.dst, `${time} ${name} 送审`)
+  let time = moment().format('LLL')
+
+  let src = config.path.src
+
+  let name = config.name || path.basename(src)
+
+  let dst = path.join(config.path.dst, `${time} ${name} 送审`)
   mainConfig = config
 
   let spinner = ora('开始svn更新项目').start()
 
   let res = execSync('svn update', {
-    cwd: mainConfig.path.src,
+    cwd: mainConfig.path.src
   }).toString()
 
   if (res.indexOf('Summary of conflicts') === -1) {
@@ -175,9 +164,8 @@ function publish (config) {
   packaging(dst).then(() => {
     remove(dst)
   })
-
 }
 
 module.exports = {
-  publish,
+  publish
 }
