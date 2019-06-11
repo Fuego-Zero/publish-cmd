@@ -2,6 +2,7 @@ module.exports = {
   BJ_dining_pc: require('./BJ-dining-config'),
   BJ_dining_xcx: require('./BJ-dining-WeChatApplet-config'),
   shopWX_xcx: require('./shop.wx.xcx.config'),
+  shopWX_xcx_33: require('./shop.wx.xcx.config.33'),
   shopBD_xcx: require('./shop.bd.xcx.config'),
   shopXCX: require('./shopXCX-config'),
   JJH_PC: require('./JJH-PC-config'),

@@ -10,7 +10,7 @@ const type = [
   '公司项目'
 ]
 
-const companyProject = {
+const COMPANY_PROJECT = {
   message: '请选择要发布的项目:',
   choices: [
     '百捷食堂',
@@ -43,6 +43,7 @@ const companyProject = {
         choices: [
           'PC端',
           '微信小程序',
+          '微信小程序33迭代',
           '百度小程序'
         ],
         handle: {
@@ -51,6 +52,9 @@ const companyProject = {
           },
           '微信小程序' () {
             xcx.publish(config.shopWX_xcx)
+          },
+          '微信小程序33迭代' () {
+            xcx.publish(config.shopWX_xcx_33)
           },
           '百度小程序' () {
             xcx.publish(config.shopBD_xcx)
@@ -84,7 +88,7 @@ const companyProject = {
   }
 }
 
-const customProject = {
+const CUSTOM_PROJECT = {
   message: '请选择要发布的项目:',
   choices: [
     '喜之丰小程序',
@@ -131,10 +135,10 @@ inquirer.prompt([
   }]).then((answers) => {
   switch (answers.name) {
     case '定制项目':
-      handle(customProject)
+      handle(CUSTOM_PROJECT)
       break
     case '公司项目':
-      handle(companyProject)
+      handle(COMPANY_PROJECT)
       break
   }
 })
