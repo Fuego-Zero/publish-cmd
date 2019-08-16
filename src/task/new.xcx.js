@@ -78,7 +78,12 @@ function exclude (type, name) {
   return temp
 }
 
-// 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
+/**
+ * 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
+ * @param {*} src
+ * @param {*} dst
+ * @param {*} callback
+ */
 function exists (src, dst, callback) {
   if (fs.existsSync(dst)) {
     // 已存在
@@ -127,6 +132,48 @@ function packaging (dst) {
 }
 
 /**
+ * 修改配置文件
+ * @param {*} dirPath - 项目生成后的目录
+ */
+function modifyConfig (dirPath) {
+  const fileUrl = 'http://file.xcx.jjiehao.com'
+  const baseUrl = 'https://shop.xcx.jjiehao.com'
+
+  let appConfigPath = path.join(dirPath, 'app-config.js')
+  let appConfig = fs.readFileSync(appConfigPath).toString()
+
+  appConfig = appConfig.replace('http://file.dev.jjiehao.com', fileUrl)
+  appConfig = appConfig.replace('http://xcx.jjiehao.com', baseUrl)
+
+  fs.writeFileSync(appConfigPath, appConfig)
+
+  let appletConfigPath = path.join(dirPath, 'applet-config.js')
+  let appletConfig = fs.readFileSync(appletConfigPath).toString()
+
+  appletConfig = appletConfig.replace(/exports.default\s*?=\s*?\{[\s\S]*\}/g, 'exports.default={}')
+
+  fs.writeFileSync(appletConfigPath, appletConfig)
+
+  let toolsPath = path.join(dirPath, 'utils', 'tools.wxs')
+
+  toolsPath = fs.existsSync(toolsPath) ? toolsPath : path.join(dirPath, 'utils', 'tools.filter.js')
+
+  if (fs.existsSync(toolsPath)) {
+    let tools = fs.readFileSync(toolsPath).toString()
+
+    tools = tools.replace('http://file.dev.jjiehao.com', fileUrl)
+
+    fs.writeFileSync(toolsPath, tools)
+  } else {
+    throw new Error('没有找到tools文件')
+  }
+
+  let swan = path.join(dirPath, 'project.swan.json')
+
+  if (fs.existsSync(toolsPath)) fs.unlinkSync(swan)
+}
+
+/**
  * 发布小程序
  * @param config {object} 配置文件对象
  */
@@ -165,6 +212,16 @@ function publish (config) {
     console.error(buildRes)
     return
   }
+
+  try {
+    spinner = ora('开始修改发布配置').start()
+    modifyConfig(path.join(src, 'dist'))
+  } catch (error) {
+    spinner.fail('发布配置修改失败')
+    console.error(error.message)
+    return
+  }
+  spinner.succeed('发布配置修改完成')
 
   exists(path.join(src, 'dist'), dst, copy)
 
