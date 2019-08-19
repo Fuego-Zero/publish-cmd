@@ -142,8 +142,8 @@ function modifyConfig (dirPath) {
   let appConfigPath = path.join(dirPath, 'app-config.js')
   let appConfig = fs.readFileSync(appConfigPath).toString()
 
-  appConfig = appConfig.replace('http://file.dev.jjiehao.com', fileUrl)
-  appConfig = appConfig.replace('http://xcx.jjiehao.com', baseUrl)
+  appConfig = appConfig.replace(/http(s)?:\/\/file\.dev\.jjiehao\.com/g, fileUrl)
+  appConfig = appConfig.replace(/http(s)?:\/\/xcx\.jjiehao\.com/g, baseUrl)
 
   fs.writeFileSync(appConfigPath, appConfig)
 
@@ -161,7 +161,7 @@ function modifyConfig (dirPath) {
   if (fs.existsSync(toolsPath)) {
     let tools = fs.readFileSync(toolsPath).toString()
 
-    tools = tools.replace('http://file.dev.jjiehao.com', fileUrl)
+    tools = tools.replace(/http(s)?:\/\/file\.dev\.jjiehao\.com/g, fileUrl)
 
     fs.writeFileSync(toolsPath, tools)
   } else {
